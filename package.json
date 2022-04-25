@@ -2,13 +2,27 @@
   "name": "rickuniverse-server",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
   "scripts": {
-    "start": "node ./bin/www"
+    "dev": "nodemon ./src/server",
+    "start": "node ./src/server",
+    "prepare": "husky install"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "node-fetch": "^3.2.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.4.0",
+    "nodemon": "^2.0.15",
+    "prettier": "2.6.2"
   }
 }
