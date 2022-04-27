@@ -15,11 +15,9 @@ export function checkIsUsernameTaken(username) {
 }
 
 export async function register(username, password) {
-  const encryptedPassword = await bcrypt.hash(password, 10);
-
   await User.create({
     username: username.toLowerCase(),
-    password: encryptedPassword,
+    password: password,
   });
 
   return generateAccessToken(username);
