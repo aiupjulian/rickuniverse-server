@@ -1,16 +1,17 @@
 import express from "express";
+import { verifyToken } from "../../middleware/auth.js";
 import { getCharacters, getCharacter } from "./character.service.js";
 
 const router = express.Router();
 
-router.get("/", async function (req, res) {
+router.get("/", verifyToken, async function (req, res) {
   const characters = await getCharacters();
-  res.send(characters);
+  res.json(characters);
 });
 
-router.get("/:id", async function (req, res) {
+router.get("/:id", verifyToken, async function (req, res) {
   const character = await getCharacter(req.params.id);
-  res.send(character);
+  res.json(character);
 });
 
 export default router;

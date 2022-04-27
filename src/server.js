@@ -1,6 +1,7 @@
 import app from "./app.js";
 import debug from "debug";
 import http from "http";
+import mongoose from "mongoose";
 
 const debugServer = debug("rickuniverse-server");
 
@@ -9,7 +10,15 @@ app.set("port", port);
 
 const server = http.createServer(app);
 
-server.listen(port);
+mongoose
+  .connect(process.env.MONGO_URI, { useNewUrlParser: true })
+  .then(() => {
+    server.listen(port);
+  })
+  .catch((err) => {
+    console.error(err);
+  });
+
 server.on("error", onError);
 server.on("listening", onListening);
 
