@@ -84,16 +84,6 @@
           "response": []
         }
       ],
-      "auth": {
-        "type": "bearer",
-        "bearer": [
-          {
-            "key": "token",
-            "value": "{{API_TOKEN}}",
-            "type": "string"
-          }
-        ]
-      },
       "event": [
         {
           "listen": "prerequest",
@@ -110,8 +100,74 @@
           }
         }
       ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Fav list",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_URL}}/user/me/favs",
+              "host": ["{{API_URL}}"],
+              "path": ["user", "me", "favs"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add fav",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{API_URL}}/user/me/favs/:id",
+              "host": ["{{API_URL}}"],
+              "path": ["user", "me", "favs", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove fav",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{API_URL}}/user/me/favs/:id",
+              "host": ["{{API_URL}}"],
+              "path": ["user", "me", "favs", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{API_TOKEN}}",
+        "type": "string"
+      }
+    ]
+  },
   "event": [
     {
       "listen": "prerequest",

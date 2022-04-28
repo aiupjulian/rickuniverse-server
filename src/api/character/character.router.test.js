@@ -5,6 +5,7 @@ import { generateAccessToken } from "../../utils/auth.js";
 import { CHARACTER_ENDPOINT, RICK_AND_MORTY_API } from "./character.service.js";
 import { CHARACTERS_MOCK, CHARACTER_MOCK } from "./__mocks__/index.js";
 import app from "../../app.js";
+import User from "../user/user.model.js";
 
 const request = supertest(app);
 
@@ -30,8 +31,10 @@ describe("character api", function () {
   });
   describe("should return data with token", function () {
     let token;
-    beforeAll(async () => {
-      token = await generateAccessToken();
+    const MOCK_USER = { username: "user", password: "pass", favs: [1] };
+    beforeEach(async () => {
+      await User.create(MOCK_USER);
+      token = await generateAccessToken(MOCK_USER.username);
     });
     it("GET /", async function () {
       nock(RICK_AND_MORTY_API)
@@ -42,7 +45,8 @@ describe("character api", function () {
         .get("/api/character")
         .set("Authorization", `Bearer ${token}`);
       expect(response.statusCode).toEqual(200);
-      expect(response.body).toEqual(CHARACTERS_MOCK);
+      expect(response.body.results[0].fav).toEqual(true);
+      expect(response.body.results[1].fav).toEqual(false);
     });
     it("GET /:id", async function () {
       const CHARACTER_ID = 1;
@@ -54,7 +58,7 @@ describe("character api", function () {
         .get(`/api/character/${CHARACTER_ID}`)
         .set("Authorization", `Bearer ${token}`);
       expect(response.statusCode).toEqual(200);
-      expect(response.body).toEqual(CHARACTER_MOCK);
+      expect(response.body.fav).toEqual(true);
     });
   });
 });
