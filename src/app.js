@@ -1,6 +1,7 @@
 import express from "express";
 import logger from "morgan";
 import dotenv from "dotenv";
+import cors from "cors";
 import routes from "./api/routes.js";
 import {
   errorConverterHandler,
@@ -13,6 +14,7 @@ const app = express();
 dotenv.config();
 
 app.use(logger("dev"));
+app.use(cors({ origin: process.env.FRONTEND_URL }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
