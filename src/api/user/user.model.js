@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 const userSchema = new mongoose.Schema({
   username: { type: String, unique: true },
   password: { type: String },
-  favs: [String],
+  favs: [Number],
 });
 
 userSchema.pre("save", async function (next) {

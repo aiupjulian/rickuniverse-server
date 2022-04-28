@@ -2,18 +2,20 @@ import express from "express";
 import httpStatus from "http-status";
 import { verifyToken } from "../../middleware/auth.js";
 import { ApiError } from "../../utils/errors.js";
-import {
-  checkIsUsernameTaken,
-  login,
-  register,
-} from "../auth/auth.controller.js";
+import { addToFavs, getFavs, removeFromFavs } from "./user.controller.js";
 
 const router = express.Router();
 
+// eslint-disable-next-line no-unused-vars
+router.get("/me/favs", verifyToken, async function (req, res, next) {
+  const favs = await getFavs(req.user.username);
+  res.json(favs);
+});
+
 router.put("/me/favs/:id", verifyToken, async function (req, res, next) {
-  const { id } = req.params;
-  const parsedId = Number(id);
-  if (isNaN(parsedId)) {
+  const { id: characterId } = req.params;
+  const parsedCharacterId = Number(characterId);
+  if (isNaN(parsedCharacterId)) {
     return next(
       new ApiError({
         statusCode: httpStatus.BAD_REQUEST,
@@ -22,33 +24,24 @@ router.put("/me/favs/:id", verifyToken, async function (req, res, next) {
     );
   }
 
-  const token = await login(username, password);
-  if (token) {
-    res.sendStatus(httpStatus.OK);
-  } else {
-    return next(new ApiError({ statusCode: httpStatus.UNAUTHORIZED }));
-  }
+  await addToFavs(req.user.username, parsedCharacterId);
+  res.sendStatus(httpStatus.OK);
 });
 
 router.delete("/me/favs/:id", verifyToken, async function (req, res, next) {
-  const { id } = req.params;
-
-  if (!username || !password) {
+  const { id: characterId } = req.params;
+  const parsedCharacterId = Number(characterId);
+  if (isNaN(parsedCharacterId)) {
     return next(
       new ApiError({
         statusCode: httpStatus.BAD_REQUEST,
-        message: "Username and password required",
+        message: "Please provide a number",
       })
     );
   }
 
-  const isUsernameTaken = await checkIsUsernameTaken(username);
-  if (isUsernameTaken) {
-    return next(new ApiError({ statusCode: httpStatus.CONFLICT }));
-  }
+  await removeFromFavs(req.user.username, parsedCharacterId);
   res.sendStatus(httpStatus.OK);
-  const token = await register(username, password);
-  res.status(httpStatus.CREATED).json({ token });
 });
 
 export default router;
